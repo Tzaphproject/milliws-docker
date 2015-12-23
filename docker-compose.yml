@@ -1,0 +1,25 @@
+mjsMongoDB:
+  restart: always
+  image: tzaphkiel/mjsmongodb
+  ports:
+    - "27016:27017"
+  environment:
+    - AUTH=true
+    - REPLICA_SET_NAME=meteormongo 
+    - DATABASE_ENGINE=wiredTiger 
+    - JOURNALING=true
+  volumes:
+    - /srv/docker/milliws/mongodb:/data/db
+
+appserver:
+  restart: always
+  image: tzaphkiel/mjsappserver
+  links:
+    - mjsMongoDB:mjsMongoDB
+  ports:
+    - "8080:3000"
+  environment:
+    - APPNAME=milliws
+    - DB_AUTH=admin:admin
+  volumes:
+    - /srv/docker/milliws/app:/data/app
